@@ -60,6 +60,7 @@ public class UserRepositoryImpl implements UserRepository {
     public void deleteEmail(String email) {
         emails.remove(email);
     }
+
     @Override
     public User getUserById(Long id) {
         idCheck(id);
@@ -69,6 +70,6 @@ public class UserRepositoryImpl implements UserRepository {
     private static void idCheck(Long id) {
         if (!users.containsKey(id))
             throw new NonExistedUserIdException("Пользователь с таким id не существует");
-   }
+    }
 
 }
