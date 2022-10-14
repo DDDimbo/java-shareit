@@ -8,13 +8,13 @@ public enum State {
     FUTURE("FUTURE"),
     ALL("ALL");
 
-    private final String STATE;
+    private final String state;
 
-    State(String STATE) {
-        this.STATE = STATE;
+    State(String state) {
+        this.state = state;
     }
 
     public String getSTATE() {
-        return STATE;
+        return state;
     }
 }
