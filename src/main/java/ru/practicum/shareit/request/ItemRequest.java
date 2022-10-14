@@ -1,14 +1,12 @@
 package ru.practicum.shareit.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Positive;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -18,17 +16,35 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @ToString
-@EqualsAndHashCode
+@AllArgsConstructor
+@Entity
+@Table(name = "requests")
 public class ItemRequest {
 
-    @Positive(message = "Id может быть только положительным")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Описание не должно быть пустым")
+    @NotNull
     private String description;
 
-    private User requester;
+    @Column(name = "requester_id", nullable = false)
+    private Long requester;
 
-    @PastOrPresent
     private LocalDateTime created;
+
+    public ItemRequest() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ItemRequest)) return false;
+        return id != null && id.equals(((ItemRequest) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

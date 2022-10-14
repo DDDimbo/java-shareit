@@ -10,9 +10,6 @@ import ru.practicum.shareit.markerinterface.Update;
 
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 
 @RestController
 @RequestMapping(path = "/users")
@@ -31,7 +28,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto update(@Validated(Update.class) @PathVariable(value = "userId") Long id, @RequestBody UserDto userDto) {
+    public UserDto update(@PathVariable(value = "userId") Long id, @Validated(Update.class) @RequestBody UserDto userDto) {
         log.info("Update user id={}", id);
         return userService.update(id, userDto);
     }
