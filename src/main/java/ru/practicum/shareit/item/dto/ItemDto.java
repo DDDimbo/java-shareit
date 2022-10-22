@@ -32,4 +32,7 @@ public class ItemDto {
     @NotNull(groups = {Create.class})
     private Boolean available;
 
+    @Positive
+    private Long requestId;
+
 }

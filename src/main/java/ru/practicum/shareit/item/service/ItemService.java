@@ -12,13 +12,13 @@ public interface ItemService {
 
     ItemFullPrintDto findById(Long userId, Long itemId);
 
-    Collection<ItemFullPrintDto> findAll(Long id);
+    Collection<ItemFullPrintDto> findAll(Long id, Integer from, Integer size);
 
     void deleteById(Long id);
 
     ItemDto update(Long id, Long itemId, ItemDto itemDto);
 
-    Collection<ItemDto> search(String text);
+    Collection<ItemDto> search(String text, Integer from, Integer size);
 
     CommentDto createComment(Long userId, Long itemId, CommentDto commentDto);
 }

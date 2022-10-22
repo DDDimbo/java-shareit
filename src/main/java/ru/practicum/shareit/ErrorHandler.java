@@ -51,6 +51,13 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleItemRequestNotFoundException(final ItemRequestNotFoundException e) {
+        log.info("Error {}", e.getMessage());
+        return Map.of("Error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleBookingNotFoundException(final BookingNotFoundException e) {
         log.info("Error {}", e.getMessage());
         return Map.of("Error", e.getMessage());
