@@ -52,8 +52,8 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                           @PathVariable(value = "itemId") Long itemId,
-                          @Validated(Update.class) @RequestBody ItemDto itemDto
-    ) {
+                          @Validated(Update.class) @RequestBody ItemDto itemDto)
+    {
         log.info("Update item userId={}, itemId={}", userId, itemId);
         return itemService.update(userId, itemId, itemDto);
     }
@@ -76,12 +76,6 @@ public class ItemController {
         return itemService.findAll(userId, from, size);
     }
 
-    @DeleteMapping("/{itemId}")
-    public void deleteById(@PathVariable(value = "itemId", required = false) Long id) {
-        log.info("Delete item id={}", id);
-        itemService.deleteById(id);
-    }
-
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Collection<ItemDto> search(
@@ -94,5 +88,11 @@ public class ItemController {
             return new ArrayList<>();
         log.info("Get result of search text: {}", text);
         return itemService.search(text, from, size);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void deleteById(@PathVariable(value = "itemId", required = false) Long id) {
+        log.info("Delete item id={}", id);
+        itemService.deleteById(id);
     }
 }

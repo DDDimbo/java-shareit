@@ -1,11 +1,8 @@
 package ru.practicum.shareit.request.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import ru.practicum.shareit.item.model.Item;
+import lombok.*;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
@@ -18,6 +15,7 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemRequestDto {
 
@@ -33,6 +31,6 @@ public class ItemRequestDto {
     @PastOrPresent
     private LocalDateTime created;
 
-    private List<Item> items;
+    private List<ItemDto> items;
 
 }

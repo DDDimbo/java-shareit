@@ -1,9 +1,6 @@
 package ru.practicum.shareit.user;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.markerinterface.Create;
 import ru.practicum.shareit.markerinterface.Update;
 
@@ -13,6 +10,7 @@ import javax.validation.constraints.*;
 @Setter
 @Builder
 @ToString
+@AllArgsConstructor
 public class UserDto {
 
     @Positive(groups = {Create.class, Update.class})

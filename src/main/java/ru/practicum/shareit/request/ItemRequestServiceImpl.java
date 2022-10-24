@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.ItemRequestNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.utility.ItemMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.utility.FromSizeRequest;
@@ -46,7 +47,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 itemRequestRepository.findAllByRequesterIdIsOrderByCreatedDesc(requesterId)
         );
         for (ItemRequestDto requestDto : requests) {
-            List<Item> items = itemRepository.findAllByRequestId(requestDto.getId());
+            List<ItemDto> items = ItemMapper.toItemDtoList(itemRepository.findAllByRequestId(requestDto.getId()));
             requestDto.setItems(items);
         }
         return requests;
@@ -61,7 +62,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(userId, pageable)
         );
         for (ItemRequestDto requestDto : itemRequestDto) {
-            List<Item> items = itemRepository.findAllByRequestId(requestDto.getId());
+            List<ItemDto> items = ItemMapper.toItemDtoList(itemRepository.findAllByRequestId(requestDto.getId()));
             requestDto.setItems(items);
         }
         return itemRequestDto;
@@ -77,7 +78,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new ItemRequestNotFoundException("Запроса с " + requestId + " не существует")));
 
-        List<Item> items = itemRepository.findAllByRequestId(requestId);
+        List<ItemDto> items = ItemMapper.toItemDtoList(itemRepository.findAllByRequestId(requestId));
         itemRequestDto.setItems(items);
         return itemRequestDto;
     }

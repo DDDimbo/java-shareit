@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.markerinterface.Create;
 import ru.practicum.shareit.markerinterface.Update;
 
@@ -16,6 +13,7 @@ import javax.validation.constraints.Positive;
 @Setter
 @ToString
 @Builder
+@AllArgsConstructor
 public class ItemDto {
 
     @Positive(message = "Id может быть только положительным", groups = {Update.class})

@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.dto.ItemFullPrintDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -59,6 +60,13 @@ public class ItemMapper {
                 .nextBooking(nextBooking)
                 .comments(comments)
                 .build();
+    }
+
+    public static List<ItemDto> toItemDtoList(List<Item> items) {
+        List<ItemDto> dtoItems = new ArrayList<>();
+        for (Item item : items)
+            dtoItems.add(toItemDto(item));
+        return dtoItems;
     }
 
 }

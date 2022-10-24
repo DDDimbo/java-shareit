@@ -104,4 +104,11 @@ public class ErrorHandler {
         log.info("Error {}", e.getMessage());
         return Map.of("Error", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> handleAlreadyExistsEmailException(final AlreadyExistsEmailException e) {
+        log.info("Error {}", e.getMessage());
+        return Map.of("Error", e.getMessage());
+    }
 }
