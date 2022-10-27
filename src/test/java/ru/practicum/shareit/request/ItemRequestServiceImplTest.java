@@ -36,7 +36,7 @@ class ItemRequestServiceImplTest {
     @Mock
     private ItemRequestRepository itemRequestRepository;
 
-    private final static LocalDateTime time = LocalDateTime.now();
+    private final LocalDateTime time = LocalDateTime.now();
     private final ItemRequestDto itemRequestDto = ItemRequestDto.builder()
             .id(1L)
             .description("description")
