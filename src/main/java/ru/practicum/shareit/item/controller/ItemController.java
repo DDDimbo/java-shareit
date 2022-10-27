@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.EmptyRequestParameterException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemFullPrintDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.markerinterface.Create;
 import ru.practicum.shareit.markerinterface.Update;
@@ -14,9 +16,6 @@ import ru.practicum.shareit.markerinterface.Update;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
 @Slf4j
@@ -26,7 +25,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                           @Validated(Create.class) @RequestBody ItemDto itemDto
     ) {
@@ -34,11 +33,20 @@ public class ItemController {
         return itemService.create(userId, itemDto);
     }
 
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentDto createComment(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                                    @PathVariable(value = "itemId") Long itemId,
+                                    @Validated(Create.class) @RequestBody CommentDto commentDto) {
+        log.info("Create comment for item with id={} by user with id={}", itemId, userId);
+        return itemService.createComment(userId, itemId, commentDto);
+    }
+
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                          @Validated(Update.class) @PathVariable(value = "itemId") Long itemId,
-                          @RequestBody ItemDto itemDto
+                          @PathVariable(value = "itemId") Long itemId,
+                          @Validated(Update.class) @RequestBody ItemDto itemDto
     ) {
         log.info("Update item userId={}, itemId={}", userId, itemId);
         return itemService.update(userId, itemId, itemDto);
@@ -46,15 +54,15 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto findById(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                            @PathVariable(value = "itemId", required = false) Long itemId) {
+    public ItemFullPrintDto findById(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                                     @PathVariable(value = "itemId", required = false) Long itemId) {
         log.info("User userId={} get item itemId={}", userId, itemId);
-        return itemService.findById(itemId);
+        return itemService.findById(userId, itemId);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemDto> findAll(@RequestHeader(value = "X-Sharer-User-Id") Long userId) {
+    public Collection<ItemFullPrintDto> findAll(@RequestHeader(value = "X-Sharer-User-Id") Long userId) {
         log.info("Get all items by owner ownerId={}", userId);
         return itemService.findAll(userId);
     }
