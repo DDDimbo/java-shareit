@@ -11,10 +11,7 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingPrintDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.enums.Status;
-import ru.practicum.shareit.exceptions.AccessErrorForItemException;
-import ru.practicum.shareit.exceptions.BookingAccessException;
-import ru.practicum.shareit.exceptions.UnsupportedStateException;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
@@ -117,6 +114,24 @@ public class BookingServiceImplIntegratedTest {
         );
 
         assertThat("Пользователя с таким id не существует", equalTo(exception.getMessage()));
+    }
+
+    @Test
+    void createDateTimeExceptionTest() {
+        final LocalDateTime start = LocalDateTime.now().plusDays(3);
+        final LocalDateTime end = LocalDateTime.now().plusDays(1);
+        final BookingCreateDto bookingCreateDto = BookingCreateDto.builder()
+                .start(start)
+                .end(end)
+                .itemId(item.getId())
+                .build();
+
+        final var exception = assertThrows(
+                DateTimeException.class,
+                () -> bookingService.create(user.getId(), bookingCreateDto)
+        );
+
+        assertThat("StartTime не может быть после EndTime или равняться ему", equalTo(exception.getMessage()));
     }
 
     @Test

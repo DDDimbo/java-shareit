@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.exceptions.ItemRequestNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
@@ -184,6 +185,30 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.items[0].description", is(itemDto.getDescription())))
                 .andExpect(jsonPath("$.items[0].available", is(itemDto.getAvailable())))
                 .andExpect(jsonPath("$.items[0].requestId", is(itemDto.getRequestId()), Long.class));
+    }
+
+
+    @Test
+    void findByIdItemRequestNotFoundExceptionTest() throws Exception {
+        final Long xSharerUserId = 1L;
+        final Long requestId = 1L;
+        ItemDto itemDto = new ItemDto(4L, "Щётка для обуви",
+                "Стандартная щётка для обуви", true, 1L);
+        ItemRequestDto itemRequestWithItem = new ItemRequestDto(
+                3L, "description", 1L, LocalDateTime.now(), List.of(itemDto)
+        );
+
+        when(itemRequestService.findById(xSharerUserId, requestId))
+                .thenThrow(new ItemRequestNotFoundException("Запроса с " + requestId + " не существует"));
+
+        mvc.perform(get("/requests/{requestId}", requestId)
+                        .header("X-Sharer-User-Id", xSharerUserId)
+                        .content(mapper.writeValueAsString(itemRequestWithItem))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.Error", is("Запроса с " + requestId + " не существует")));
     }
 
 }

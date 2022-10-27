@@ -8,8 +8,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.exceptions.ItemRequestNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.utility.ItemMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.utility.FromSizeRequest;
 
@@ -251,5 +254,30 @@ class ItemRequestServiceImplTest {
                 .existsById(requestId);
         verify(itemRequestRepository, times(1))
                 .findById(requestId);
+    }
+
+    @Test
+    void itemFullPrintDtoTest() {
+        User owner = User.builder()
+                .name("John")
+                .email("some@email.com")
+                .build();
+        Item item = Item.builder()
+                .id(1L)
+                .name("Аккумуляторная дрель")
+                .description("Аккумуляторная дрель")
+                .available(true)
+                .owner(owner)
+                .requestId(null)
+                .build();
+        final var result = ItemMapper.toItemFullPrintDtoForUser(item, List.of());
+
+        assertThat(result.getId(), equalTo(item.getId()));
+        assertThat(result.getName(), equalTo(item.getName()));
+        assertThat(result.getDescription(), equalTo(item.getDescription()));
+        assertThat(result.getAvailable(), equalTo(item.getAvailable()));
+        assertThat(result.getLastBooking(), equalTo(null));
+        assertThat(result.getNextBooking(), equalTo(null));
+        assertThat(result.getComments().size(), equalTo(0));
     }
 }

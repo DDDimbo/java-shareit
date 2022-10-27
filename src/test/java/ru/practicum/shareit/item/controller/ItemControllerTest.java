@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.exceptions.AccessBookingException;
+import ru.practicum.shareit.exceptions.OwnerAccessException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemFullPrintDto;
@@ -129,6 +131,24 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.authorName", is(commentdto.getAuthorName())));
     }
 
+    @Test
+    void createCommentAccessBookingExceptionTest() throws Exception {
+        when(itemService.createComment(anyLong(), anyLong(), any()))
+                .thenThrow(new AccessBookingException(
+                        "Пользователь, который не брал в аренду вещь, не может написать комментарий")
+                );
+
+        mvc.perform(post("/items/{itemId}/comment", 1L)
+                        .header("X-Sharer-User-Id", 1L)
+                        .content(mapper.writeValueAsString(commentdto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.Error",
+                        is("Пользователь, который не брал в аренду вещь, не может написать комментарий")));
+    }
+
 
     /**
      * Тесты на проверку метода patch
@@ -155,6 +175,22 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable())));
     }
 
+    @Test
+    void updateOwnerAccessExceptionTest() throws Exception {
+        final Long xSharerUserId = 1L;
+
+        when(itemService.update(anyLong(), anyLong(), any()))
+                .thenThrow(new OwnerAccessException("Данный пользователь не является владельцем вещи"));
+
+        mvc.perform(patch("/items/{itemId}", 1L)
+                        .header("X-Sharer-User-Id", xSharerUserId)
+                        .content(mapper.writeValueAsString(itemDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.Error", is("Данный пользователь не является владельцем вещи")));
+    }
 
     /**
      * Тесты на проверку get

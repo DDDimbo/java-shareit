@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingPrintDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -433,5 +434,43 @@ class BookingServiceImplTest {
                 .existsById(bookingId);
         verify(bookingRepository, times(1))
                 .findById(bookingId);
+    }
+
+    @Test
+    void bookingShortInfoDto() {
+        User owner = User.builder()
+                .id(2L)
+                .name("John")
+                .email("some@email.com")
+                .build();
+        Item item = Item.builder()
+                .id(1L)
+                .name("Аккумуляторная дрель")
+                .description("Аккумуляторная дрель")
+                .available(true)
+                .owner(owner)
+                .requestId(null)
+                .build();
+        User user = User.builder()
+                .id(1L)
+                .name("updateName")
+                .email("updateName@user.com")
+                .build();
+        final Booking booking = Booking.builder()
+                .id(1L)
+                .start(start)
+                .end(end)
+                .item(item)
+                .booker(user)
+                .status(Status.APPROVED)
+                .build();
+        final var result = BookingMapper.toBookingShortInfoDto(booking);
+
+        assertThat(result.getId(), equalTo(booking.getId()));
+        assertThat(result.getStart(), equalTo(booking.getStart()));
+        assertThat(result.getEnd(), equalTo(booking.getEnd()));
+        assertThat(result.getItemId(), equalTo(booking.getItem().getId()));
+        assertThat(result.getBookerId(), equalTo(booking.getBooker().getId()));
+        assertThat(result.getStatus(), equalTo(booking.getStatus()));
     }
 }

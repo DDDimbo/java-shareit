@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.exceptions.AlreadyExistsEmailException;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -89,6 +91,47 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(updateUserDto.getEmail())));
     }
 
+    @Test
+    void updateAlreadyExistsEmailException() throws Exception {
+        UserDto updateUserDto = UserDto.builder()
+                .id(1L)
+                .name("Alen")
+                .email("alen.doe@mail.com")
+                .build();
+
+        when(userService.update(anyLong(), any()))
+                .thenThrow(new AlreadyExistsEmailException("Новый email совпадает со старым"));
+
+        mvc.perform(patch("/users/{userId}", 1L)
+                        .content(mapper.writeValueAsString(updateUserDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.Error", is("Новый email совпадает со старым")));
+    }
+
+    @Test
+    void updateUserNotFoundException() throws Exception {
+        UserDto updateUserDto = UserDto.builder()
+                .id(1L)
+                .name("Alen")
+                .email("alen.doe@mail.com")
+                .build();
+
+        when(userService.update(anyLong(), any()))
+                .thenThrow(new UserNotFoundException("User с идентификатором " + 1L + " не найден."));
+
+        mvc.perform(patch("/users/{userId}", 1L)
+                        .content(mapper.writeValueAsString(updateUserDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.Error",
+                        is("User с идентификатором " + 1L + " не найден.")));
+    }
+
 
     /**
      * Тесты на проверку метода findById
@@ -108,7 +151,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
-
 
     /**
      * Тесты на проверку метода findByAll
