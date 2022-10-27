@@ -27,7 +27,6 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.utility.FromSizeRequest;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Collection<ItemFullPrintDto> findAll(Long ownerId, Integer from, Integer size) {
+    public List<ItemFullPrintDto> findAll(Long ownerId, Integer from, Integer size) {
         Pageable pageable = FromSizeRequest.of(from, size);
         List<Item> ownerItems = itemRepository.findAllByOwnerIdOrderByIdAsc(ownerId, pageable);
         List<ItemFullPrintDto> resItems = new ArrayList<>();
@@ -156,7 +155,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Collection<ItemDto> search(String text, Integer from, Integer size) {
+    public List<ItemDto> search(String text, Integer from, Integer size) {
         Pageable pageable = FromSizeRequest.of(from, size);
 
         return itemRepository.itemSearch(text, pageable)

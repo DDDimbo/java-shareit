@@ -89,30 +89,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(updateUserDto.getEmail())));
     }
 
-//    @Test
-//    void saveNewUserDublicateEmailException() throws Exception {
-//        when(userService.update(anyLong(), any()))
-//                .thenThrow(AlreadyExistsEmailException.class);
-//
-//        mvc.perform(patch("/users/{userId}", anyLong())
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isConflict());
-//    }
-//
-//    @Test
-//    void saveAlreadyExistsUserException() throws Exception {
-//        when(userService.update(anyLong(), any()))
-//                .thenThrow(UserNotFoundException.class);
-//
-//        mvc.perform(patch("/users/{userId}", anyLong())
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotFound());
-//    }
-
 
     /**
      * Тесты на проверку метода findById

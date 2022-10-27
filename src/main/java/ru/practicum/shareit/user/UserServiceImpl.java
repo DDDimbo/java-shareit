@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.AlreadyExistsEmailException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Collection<UserDto> findAll() throws UserNotFoundException {
+    public List<UserDto> findAll() throws UserNotFoundException {
         return userRepository.findAll()
                 .stream()
                 .map(UserMapper::toUserDto)

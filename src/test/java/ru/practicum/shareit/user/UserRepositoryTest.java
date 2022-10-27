@@ -1,19 +1,15 @@
 package ru.practicum.shareit.user;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringRunner.class )
 @DataJpaTest
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class UserRepositoryTest {
 
     @Autowired
@@ -27,27 +23,22 @@ class UserRepositoryTest {
         assertNotNull(em);
     }
 
-    @Test
-    void save() {
+    @AfterEach
+    public void afterEach() {
+        em.clear();
     }
 
-    @Test
-    void findById() {
-    }
-
-    @Test
-    void findAll() {
-    }
-
-    @Test
-    void existsById() {
-    }
-
+    // Наставник сказал, что переопределенные методы не нужно тестить
     @Test
     void existsByEmail() {
+        final User user = User.builder()
+                .name("John")
+                .email("some@email.com")
+                .build();
+        em.persist(user);
+
+        boolean result = userRepository.existsByEmail("some@email.com");
+        assertTrue(result);
     }
 
-    @Test
-    void deleteById() {
-    }
 }

@@ -23,7 +23,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<CommentPrintView> findFirst10ByItemIdOrderByCreatedDesc(Long itemId);
 
-
-    List<CommentPrintView> findAllByItemIdOrderByCreatedDesc(Long itemId);
-
 }

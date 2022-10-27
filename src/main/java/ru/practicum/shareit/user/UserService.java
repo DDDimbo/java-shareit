@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user;
 
 
-import java.util.Collection;
+import java.util.List;
 
 public interface UserService {
 
@@ -9,7 +9,7 @@ public interface UserService {
 
     UserDto findById(Long id);
 
-    Collection<UserDto> findAll();
+    List<UserDto> findAll();
 
     void deleteById(Long id);
 

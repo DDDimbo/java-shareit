@@ -103,7 +103,7 @@ public class BookingServiceImpl implements BookingService {
         if (!userRepository.existsById(userId))
             throw new UserNotFoundException("Пользователя с таким id не существует");
         if (!bookingRepository.existsById(bookingId))
-            throw new BookingNotFoundException("Бронь с таким id не существует");
+            throw new BookingNotFoundException("Брони с таким id не существует");
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException(

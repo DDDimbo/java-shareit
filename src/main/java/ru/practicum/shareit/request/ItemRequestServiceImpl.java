@@ -14,7 +14,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.utility.FromSizeRequest;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -39,7 +38,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public Collection<ItemRequestDto> findAllByRequester(Long requesterId) {
+    public List<ItemRequestDto> findAllByRequester(Long requesterId) {
         if (!userRepository.existsById(requesterId))
             throw new UserNotFoundException("Пользователя с таким id не существует");
 
@@ -54,7 +53,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public Collection<ItemRequestDto> findAll(Long userId, Integer from, Integer size) {
+    public List<ItemRequestDto> findAll(Long userId, Integer from, Integer size) {
         if (!userRepository.existsById(userId))
             throw new UserNotFoundException("Пользователя с таким id не существует");
         Pageable pageable = FromSizeRequest.of(from, size);
