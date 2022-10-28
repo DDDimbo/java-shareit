@@ -20,11 +20,9 @@ public class ItemDto {
     private Long id;
 
     @NotBlank(message = "Имя не должно быть пустым", groups = {Create.class})
-//    @Pattern(regexp = "^\\s*$", groups = {Update.class})
     private String name;
 
     @NotBlank(message = "Описание не должно быть пустым", groups = {Create.class})
-//    @Pattern(regexp = "^\\s*$", groups = {Update.class})
     private String description;
 
     @NotNull(groups = {Create.class})

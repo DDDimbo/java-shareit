@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Builder
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "items")
 public class Item {
@@ -35,9 +36,6 @@ public class Item {
 
     @Column(name = "request_id", nullable = true)
     private Long requestId;
-
-    public Item() {
-    }
 
     @Override
     public boolean equals(Object o) {

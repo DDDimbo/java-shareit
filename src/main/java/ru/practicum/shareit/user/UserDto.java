@@ -17,7 +17,6 @@ public class UserDto {
     private Long id;
 
     @NotBlank(message = "Имя не должно быть пустым", groups = {Create.class})
-//    @Pattern(regexp = "^\\s*$", groups = {Update.class})
     @Pattern(regexp = "^\\S+$", groups = {Create.class, Update.class})
     private String name;
 
