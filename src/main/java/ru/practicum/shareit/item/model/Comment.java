@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
@@ -12,7 +15,6 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "comments")
 public class Comment {
 
@@ -32,6 +34,9 @@ public class Comment {
 
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
+
+    public Comment() {
+    }
 
     @Override
     public boolean equals(Object o) {

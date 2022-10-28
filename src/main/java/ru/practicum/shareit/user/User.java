@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Builder
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -24,6 +23,9 @@ public class User {
 
     @Column(nullable = false)
     private String email;
+
+    public User() {
+    }
 
     @Override
     public boolean equals(Object o) {
