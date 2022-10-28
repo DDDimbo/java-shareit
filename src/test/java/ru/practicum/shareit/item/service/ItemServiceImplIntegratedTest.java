@@ -321,6 +321,23 @@ public class ItemServiceImplIntegratedTest {
     }
 
     @Test
+    void updateItemNotFoundExceptionTest() {
+        final Long ownerId = createOwner.getId();
+        final Long itemId = 9999L;
+        ItemDto itemDto = ItemDto.builder()
+                .name("newName")
+                .description("NewDescription")
+                .available(true)
+                .build();
+
+        final var exception = assertThrows(
+                ItemNotFoundException.class,
+                () -> itemService.update(ownerId, itemId, itemDto)
+        );
+        assertThat("Item с идентификатором " + itemId + " не найден.", equalTo(exception.getMessage()));
+    }
+
+    @Test
     void updateOwnerAccessException() {
         final User tempUser = User.builder()
                 .name("Terry")
