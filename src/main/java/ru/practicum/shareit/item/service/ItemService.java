@@ -4,7 +4,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemFullPrintDto;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface ItemService {
 
@@ -12,13 +12,13 @@ public interface ItemService {
 
     ItemFullPrintDto findById(Long userId, Long itemId);
 
-    Collection<ItemFullPrintDto> findAll(Long id);
+    List<ItemFullPrintDto> findAll(Long id, Integer from, Integer size);
 
     void deleteById(Long id);
 
     ItemDto update(Long id, Long itemId, ItemDto itemDto);
 
-    Collection<ItemDto> search(String text);
+    List<ItemDto> search(String text, Integer from, Integer size);
 
     CommentDto createComment(Long userId, Long itemId, CommentDto commentDto);
 }

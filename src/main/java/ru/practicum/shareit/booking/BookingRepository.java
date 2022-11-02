@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
@@ -20,9 +21,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Override
     boolean existsById(Long id);
 
-    List<Booking> findAllByBookerIdOrderByStartDesc(Long userId);
+    List<Booking> findAllByBookerIdOrderByStartDesc(Long userId, Pageable pageable);
 
-    List<Booking> findAllByBookerIdAndStatusOrderByStartDesc(Long userId, Status status);
+    List<Booking> findAllByBookerIdAndStatusOrderByStartDesc(Long userId, Status status, Pageable pageable);
 
 
     @Query(value = "SELECT b " +
@@ -30,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "LEFT OUTER JOIN Item as i ON b.item.id=i.id " +
             "WHERE i.owner.id = ?1 AND b.status = ?2 " +
             "ORDER BY b.start DESC ")
-    List<Booking> findAllForOwnerByStatus(Long userId, Status status);
+    List<Booking> findAllForOwnerByStatus(Long userId, Status status, Pageable pageable);
 
 
     @Query(value = "SELECT b " +
@@ -38,45 +39,45 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "LEFT OUTER JOIN Item as i ON b.item.id=i.id " +
             "WHERE i.owner.id = ?1 " +
             "ORDER BY b.start DESC ")
-    List<Booking> findAllForOwner(Long userId);
+    List<Booking> findAllForOwner(Long userId, Pageable pageable);
 
-    List<Booking> findAllByItemIdAndStatusIs(Long itemId, Status status);
+//    List<Booking> findAllByItemIdAndStatusIs(Long itemId, Status status);
 
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 and b.status in ?2 " +
             "and b.start <= current_timestamp and b.end > current_timestamp " +
             "order by b.start desc ")
-    List<Booking> findAllWithStateCurrent(Long userId, List<Status> status);
+    List<Booking> findAllWithStateCurrent(Long userId, List<Status> status, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 and b.status in ?2 " +
             "and b.start <= current_timestamp and b.end > current_timestamp " +
             "order by b.start desc ")
-    List<Booking> findAllWithStateCurrentForOwner(Long userId, List<Status> status);
+    List<Booking> findAllWithStateCurrentForOwner(Long userId, List<Status> status, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 " +
             "and b.status in ?2 and b.start > current_timestamp " +
             "order by b.start desc ")
-    List<Booking> findAllWithStateFuture(Long userId, List<Status> status);
+    List<Booking> findAllWithStateFuture(Long userId, List<Status> status, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 " +
             "and b.status in ?2 and b.start > current_timestamp " +
             "order by b.start desc ")
-    List<Booking> findAllWithStateFutureForOwner(Long userId, List<Status> status);
+    List<Booking> findAllWithStateFutureForOwner(Long userId, List<Status> status, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 and b.status = ?2 " +
             "and b.end < current_timestamp " +
             "order by b.start desc ")
-    List<Booking> findAllWithStatePast(Long userId, Status status);
+    List<Booking> findAllWithStatePast(Long userId, Status status, Pageable pageable);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 and b.status = ?2 " +
             "and b.end < current_timestamp " +
             "order by b.start desc ")
-    List<Booking> findAllWithStatePastForOwner(Long userId, Status status);
+    List<Booking> findAllWithStatePastForOwner(Long userId, Status status, Pageable pageable);
 
     @Query("select count(b) > 0 " +
             "from Booking b " +

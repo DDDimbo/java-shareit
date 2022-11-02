@@ -51,6 +51,13 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleItemRequestNotFoundException(final ItemRequestNotFoundException e) {
+        log.info("Error {}", e.getMessage());
+        return Map.of("Error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleBookingNotFoundException(final BookingNotFoundException e) {
         log.info("Error {}", e.getMessage());
         return Map.of("Error", e.getMessage());
@@ -94,6 +101,13 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleAccessBookingException(final AccessBookingException e) {
+        log.info("Error {}", e.getMessage());
+        return Map.of("Error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> handleAlreadyExistsEmailException(final AlreadyExistsEmailException e) {
         log.info("Error {}", e.getMessage());
         return Map.of("Error", e.getMessage());
     }

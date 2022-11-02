@@ -6,12 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
-/**
- * TODO Sprint add-item-requests.
- */
 
 @Getter
 @Builder
@@ -25,12 +20,13 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "requester_id", nullable = false)
-    private Long requester;
+    private Long requesterId;
 
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
     public ItemRequest() {

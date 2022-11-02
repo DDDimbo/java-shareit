@@ -10,6 +10,8 @@ import ru.practicum.shareit.booking.dto.BookingPrintDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.markerinterface.Create;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 
@@ -50,20 +52,24 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookingPrintDto> findAllByState(
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestHeader(value = "X-Sharer-User-Id") Long userId,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state
     ) {
         log.info("Get booking by value: {}", userId);
-        return bookingService.findAllByState(userId, state);
+        return bookingService.findAllByState(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookingPrintDto> findAllByParamForOwner(
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestHeader(value = "X-Sharer-User-Id") Long userId,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state
     ) {
         log.info("Get booking by value: {}", userId);
-        return bookingService.findAllByStateForOwner(userId, state);
+        return bookingService.findAllByStateForOwner(userId, state, from, size);
     }
 }

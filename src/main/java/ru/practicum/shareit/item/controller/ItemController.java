@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.markerinterface.Create;
 import ru.practicum.shareit.markerinterface.Update;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -29,8 +31,12 @@ public class ItemController {
     public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                           @Validated(Create.class) @RequestBody ItemDto itemDto
     ) {
-        log.info("Create item");
+        if (itemDto.getRequestId() != null)
+            log.info("Create item for request with id={}", itemDto.getRequestId());
+        else
+            log.info("Create item");
         return itemService.create(userId, itemDto);
+
     }
 
     @PostMapping("/{itemId}/comment")
@@ -46,8 +52,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                           @PathVariable(value = "itemId") Long itemId,
-                          @Validated(Update.class) @RequestBody ItemDto itemDto
-    ) {
+                          @Validated(Update.class) @RequestBody ItemDto itemDto) {
         log.info("Update item userId={}, itemId={}", userId, itemId);
         return itemService.update(userId, itemId, itemDto);
     }
@@ -62,25 +67,31 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemFullPrintDto> findAll(@RequestHeader(value = "X-Sharer-User-Id") Long userId) {
+    public Collection<ItemFullPrintDto> findAll(
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestHeader(value = "X-Sharer-User-Id") Long userId) {
         log.info("Get all items by owner ownerId={}", userId);
-        return itemService.findAll(userId);
+        return itemService.findAll(userId, from, size);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<ItemDto> search(
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "text", required = false) String text) {
+        if (text == null)
+            throw new EmptyRequestParameterException("Параметр запроса должен содержать текст");
+        if (text.isBlank())
+            return new ArrayList<>();
+        log.info("Get result of search text: {}", text);
+        return itemService.search(text, from, size);
     }
 
     @DeleteMapping("/{itemId}")
     public void deleteById(@PathVariable(value = "itemId", required = false) Long id) {
         log.info("Delete item id={}", id);
         itemService.deleteById(id);
-    }
-
-    @GetMapping("/search")
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemDto> search(@RequestParam(value = "text", required = false) String text) {
-        if (text == null)
-            throw new EmptyRequestParameterException("Параметр запроса должен содержать текст");
-        if (text.isBlank())
-            return new ArrayList<>();
-        log.info("Get result of search text: {}", text);
-        return itemService.search(text);
     }
 }

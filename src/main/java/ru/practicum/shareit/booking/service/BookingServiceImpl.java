@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -15,6 +16,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.utility.FromSizeRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -101,7 +103,7 @@ public class BookingServiceImpl implements BookingService {
         if (!userRepository.existsById(userId))
             throw new UserNotFoundException("Пользователя с таким id не существует");
         if (!bookingRepository.existsById(bookingId))
-            throw new BookingNotFoundException("Бронь с таким id не существует");
+            throw new BookingNotFoundException("Брони с таким id не существует");
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException(
@@ -117,32 +119,33 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public List<BookingPrintDto> findAllByState(Long userId, String state) {
+    public List<BookingPrintDto> findAllByState(Long userId, String state, Integer from, Integer size) {
         if (!userRepository.existsById(userId))
             throw new UserNotFoundException("Пользователя с таким id не существует");
+        Pageable pageable = FromSizeRequest.of(from, size);
 
         if (state.equals(ALL.getSTATE())) {
-            return BookingMapper.toBookingPrintDtoList(bookingRepository.findAllByBookerIdOrderByStartDesc(userId));
+            return BookingMapper.toBookingPrintDtoList(bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable));
         } else if (state.equals(CURRENT.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
                     bookingRepository.findAllWithStateCurrent(userId,
-                            List.of(Status.APPROVED, Status.WAITING, Status.REJECTED))
+                            List.of(Status.APPROVED, Status.WAITING, Status.REJECTED), pageable)
             );
         } else if (state.equals(PAST.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllWithStatePast(userId, Status.APPROVED)
+                    bookingRepository.findAllWithStatePast(userId, Status.APPROVED, pageable)
             );
         } else if (state.equals(FUTURE.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllWithStateFuture(userId,  List.of(Status.APPROVED, Status.WAITING))
+                    bookingRepository.findAllWithStateFuture(userId,  List.of(Status.APPROVED, Status.WAITING), pageable)
             );
         } else if (state.equals(WAITING.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING)
+                    bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING, pageable)
             );
         } else if (state.equals(REJECTED.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED)
+                    bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED, pageable)
             );
         } else
             throw new UnsupportedStateException("Unknown state: " + state);
@@ -150,33 +153,34 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public List<BookingPrintDto> findAllByStateForOwner(Long userId, String state) {
+    public List<BookingPrintDto> findAllByStateForOwner(Long userId, String state, Integer from, Integer size) {
         if (!userRepository.existsById(userId))
             throw new UserNotFoundException("Пользователя с таким id не существует");
+        Pageable pageable = FromSizeRequest.of(from, size);
 
 
         if (state.equals(ALL.getSTATE())) {
-            return BookingMapper.toBookingPrintDtoList(bookingRepository.findAllForOwner(userId));
+            return BookingMapper.toBookingPrintDtoList(bookingRepository.findAllForOwner(userId, pageable));
         } else if (state.equals(CURRENT.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
                     bookingRepository.findAllWithStateCurrentForOwner(userId,
-                            List.of(Status.APPROVED, Status.WAITING, Status.REJECTED))
+                            List.of(Status.APPROVED, Status.WAITING, Status.REJECTED), pageable)
             );
         } else if (state.equals(PAST.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllWithStatePastForOwner(userId, Status.APPROVED)
+                    bookingRepository.findAllWithStatePastForOwner(userId, Status.APPROVED, pageable)
             );
         } else if (state.equals(FUTURE.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllWithStateFutureForOwner(userId, List.of(Status.APPROVED, Status.WAITING))
+                    bookingRepository.findAllWithStateFutureForOwner(userId, List.of(Status.APPROVED, Status.WAITING), pageable)
             );
         } else if (state.equals(WAITING.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllForOwnerByStatus(userId, Status.WAITING)
+                    bookingRepository.findAllForOwnerByStatus(userId, Status.WAITING, pageable)
             );
         } else if (state.equals(REJECTED.getSTATE())) {
             return BookingMapper.toBookingPrintDtoList(
-                    bookingRepository.findAllForOwnerByStatus(userId, Status.REJECTED)
+                    bookingRepository.findAllForOwnerByStatus(userId, Status.REJECTED, pageable)
             );
         } else
             throw new UnsupportedStateException("Unknown state: " + state);
