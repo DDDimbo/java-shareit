@@ -4,8 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.markerinterface.Create;
 import ru.practicum.shareit.markerinterface.Update;
 
-import javax.validation.constraints.*;
-
 @Getter
 @Setter
 @Builder
