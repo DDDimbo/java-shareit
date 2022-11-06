@@ -3,10 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.markerinterface.Create;
-import ru.practicum.shareit.markerinterface.Update;
 
 import java.util.Collection;
 
@@ -21,14 +18,14 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserDto create(@Validated(Create.class) @RequestBody UserDto userDto) {
+    public UserDto create(@RequestBody UserDto userDto) {
         log.info("Create user");
         return userService.create(userDto);
     }
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto update(@PathVariable(value = "userId") Long id, @Validated(Update.class) @RequestBody UserDto userDto) {
+    public UserDto update(@PathVariable(value = "userId") Long id, @RequestBody UserDto userDto) {
         log.info("Update user id={}", id);
         return userService.update(id, userDto);
     }

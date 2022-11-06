@@ -3,15 +3,11 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingPrintDto;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.markerinterface.Create;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 
@@ -26,10 +22,10 @@ public class BookingController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookingPrintDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                                  @Validated(Create.class) @RequestBody BookingCreateDto bookingCreateDtoDto
+                                  @RequestBody BookingCreateDto bookingCreateDto
     ) {
         log.info("Create booking by user with id={}", userId);
-        return bookingService.create(userId, bookingCreateDtoDto);
+        return bookingService.create(userId, bookingCreateDto);
     }
 
     @PatchMapping("/{bookingId}")
@@ -52,8 +48,8 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookingPrintDto> findAllByState(
-            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestHeader(value = "X-Sharer-User-Id") Long userId,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state
     ) {
@@ -64,8 +60,8 @@ public class BookingController {
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookingPrintDto> findAllByParamForOwner(
-            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestHeader(value = "X-Sharer-User-Id") Long userId,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state
     ) {

@@ -6,11 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
-
 
 @RestController
 @RequestMapping(path = "/requests")
@@ -22,7 +18,7 @@ public class ItemRequestController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ItemRequestDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                                 @Valid @RequestBody ItemRequestDto itemRequestDto) {
+                                 @RequestBody ItemRequestDto itemRequestDto) {
         log.info("Create itemRequest by user with id={}", userId);
         return itemRequestService.create(userId, itemRequestDto);
     }
@@ -37,8 +33,8 @@ public class ItemRequestController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public Collection<ItemRequestDto> findAll(
-            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestHeader(value = "X-Sharer-User-Id") Long ownerId) {
         log.info("Get all requests by owner with id={}", ownerId);
         return itemRequestService.findAll(ownerId, from, size);

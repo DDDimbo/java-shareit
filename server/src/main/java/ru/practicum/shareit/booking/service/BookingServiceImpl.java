@@ -185,6 +185,5 @@ public class BookingServiceImpl implements BookingService {
         } else
             throw new UnsupportedStateException("Unknown state: " + state);
     }
-
-
 }
+

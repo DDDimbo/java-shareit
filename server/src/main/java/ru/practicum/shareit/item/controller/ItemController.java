@@ -3,18 +3,13 @@ package ru.practicum.shareit.item.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.EmptyRequestParameterException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemFullPrintDto;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.markerinterface.Create;
-import ru.practicum.shareit.markerinterface.Update;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -29,7 +24,7 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                          @Validated(Create.class) @RequestBody ItemDto itemDto
+                          @RequestBody ItemDto itemDto
     ) {
         if (itemDto.getRequestId() != null)
             log.info("Create item for request with id={}", itemDto.getRequestId());
@@ -43,7 +38,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public CommentDto createComment(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                                     @PathVariable(value = "itemId") Long itemId,
-                                    @Validated(Create.class) @RequestBody CommentDto commentDto) {
+                                    @RequestBody CommentDto commentDto) {
         log.info("Create comment for item with id={} by user with id={}", itemId, userId);
         return itemService.createComment(userId, itemId, commentDto);
     }
@@ -52,7 +47,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                           @PathVariable(value = "itemId") Long itemId,
-                          @Validated(Update.class) @RequestBody ItemDto itemDto) {
+                          @RequestBody ItemDto itemDto) {
         log.info("Update item userId={}, itemId={}", userId, itemId);
         return itemService.update(userId, itemId, itemDto);
     }
@@ -68,8 +63,8 @@ public class ItemController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Collection<ItemFullPrintDto> findAll(
-            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestHeader(value = "X-Sharer-User-Id") Long userId) {
         log.info("Get all items by owner ownerId={}", userId);
         return itemService.findAll(userId, from, size);
@@ -78,8 +73,8 @@ public class ItemController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Collection<ItemDto> search(
-            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "text", required = false) String text) {
         if (text == null)
             throw new EmptyRequestParameterException("Параметр запроса должен содержать текст");

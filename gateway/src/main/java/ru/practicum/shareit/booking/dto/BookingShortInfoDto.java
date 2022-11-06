@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.shareit.enums.Status;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Builder
-public class BookingPrintDto {
+public class BookingShortInfoDto {
 
 
     private Long id;
@@ -23,11 +21,10 @@ public class BookingPrintDto {
 
     private LocalDateTime end;
 
-    private Item item;
+    private Long itemId;
 
-    private User booker;
+    private Long bookerId;
 
     private Status status;
-
 
 }
