@@ -53,7 +53,6 @@ public class BookingController {
 	) {
 		State state = State.from(stateParam)
 				.orElseThrow(() -> new UnsupportedStateException("Unknown state: " + stateParam));
-		log.info("Get booking by value: {}", userId);
 		log.info("Get booking with state {}, userId={}, from={}, size={} validation", state, userId, from, size);
 		return bookingClient.getBookings(userId, state, from, size);
 	}
@@ -67,7 +66,6 @@ public class BookingController {
 	) {
 		State state = State.from(stateParam)
 				.orElseThrow(() -> new UnsupportedStateException("Unknown state: " + stateParam));
-		log.info("Get booking by value: {}", userId);
 		log.info("Get booking by value: {} validation", userId);
 		return bookingClient.getBookingsForOwner(userId, state, from, size);
 	}
